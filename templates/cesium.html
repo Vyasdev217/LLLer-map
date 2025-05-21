@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地球上のLLLer</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.128/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.128/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <style>
+        html, body, #cesiumContainer {
+            width: 100%; height: 100%; margin: 0; padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="cesiumContainer"></div>
+    <script type="module">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjNzM5OTNmOC1hMjYzLTRmNDQtOTZiOC01OGExYjNkOTY0NTEiLCJpZCI6Mjk4MzY0LCJpYXQiOjE3NDU5NTAyMDZ9.yWXX67sNfHYpzBn4ksSWHEkizwvtZT7yYTmEBUUUstY';
+
+        // Initialize the Cesium Viewer in the HTML element with the `cesiumContainer` ID.
+        const viewer = new Cesium.Viewer('cesiumContainer', {
+            terrain: Cesium.Terrain.fromWorldTerrain(),
+        });  
+
+        function addPin_access(longitude, latitude, name) {
+            viewer.entities.add({
+                position: Cesium.Cartesian3.fromDegrees(longitude, latitude),
+                name: name,
+                point: {
+                    pixelSize: 10,
+                    color: Cesium.Color.RED,
+                }
+            });
+        }
+
+        function addPin_country(longitude, latitude, name) {
+            viewer.entities.add({
+                position: Cesium.Cartesian3.fromDegrees(longitude, latitude),
+                name: name,
+                point: {
+                    pixelSize: 10,
+                    color: Cesium.Color.BLUE,
+                },
+                label: {
+                    text: name,
+                    font: '14pt Helvetica',
+                    fillColor: Cesium.Color.WHITE,
+                    outlineColor: Cesium.Color.BLACK,
+                    outlineWidth: 2,
+                    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                    horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                }
+            });
+        }
+
+        const pins_access = {{ pins.access | tojson }};
+        pins_access.forEach(pin => { addPin_access(pin.longitude, pin.latitude); });
+        const pins_country = {{ pins.country | tojson }};
+        pins_country.forEach(pin => { addPin_country(pin.longitude, pin.latitude, pin.label); });
+
+    </script>
+</body>
+</html>
